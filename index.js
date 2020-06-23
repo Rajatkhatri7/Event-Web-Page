@@ -54,19 +54,17 @@ const uiConfig = {
 
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-
-// Called when the user clicks the RSVP button
-startRsvpButton.addEventListener("click",
- () => {
-    if (firebase.auth().currentUser) {
-      // User is signed in; allows user to sign out
-      firebase.auth().signOut();
-    } else {
-      // No user is signed in; allows user to sign in
-      ui.start("#firebaseui-auth-container", uiConfig);
-    }
+// Listen to RSVP button clicks
+startRsvpButton.addEventListener('click', () => {
+  if (firebase.auth().currentUser){
+    // User is signed in; allows user to sign out
+    firebase.auth().signOut();
+  }
+  else{
+    // No user is signed in; allows user to sign in
+    ui.start('#firebaseui-auth-container', uiConfig);
+  }
 });
-
 
 // Listen to the current Auth state
 firebase.auth().onAuthStateChanged((user) => {
@@ -74,20 +72,19 @@ firebase.auth().onAuthStateChanged((user) => {
    startRsvpButton.textContent = "LOGOUT";
    // Show guestbook to logged-in users
    guestbookContainer.style.display = "block";
-
-   //Suscreibe  to the guest book
    subscribeGuestbook();
+   subscribeCurrentRSVP(user);
+
+
  }
  else{
    startRsvpButton.textContent = "RSVP";
    // Hide guestbook for non-logged-in users
    guestbookContainer.style.display = "none";
-
-   //Unsuscribe from the guestbook collection
    unsubscribeGuestbook();
+   unsubscribeCurrentRSVP();
  }
 });
-
 
 // Listen to the form submission
 form.addEventListener("submit", (e) => {
@@ -143,11 +140,12 @@ rsvpYes.onclick = () => {
    attending: true
  }).catch(console.error)
 }
+
 rsvpNo.onclick = () => {
  // Get a reference to the user's document in the attendees collection
  const userDoc = firebase.firestore().collection('attendees').doc(firebase.auth().currentUser.uid);
 
- // If they RSVP'd no, save a document with attending: false
+ // If they RSVP'd yes, save a document with attending: true
  userDoc.set({
    attending: false
  }).catch(console.error)
@@ -164,7 +162,6 @@ firebase.firestore()
 })
 
 // Listen for attendee list
-
 function subscribeCurrentRSVP(user){
  rsvpListener = firebase.firestore()
  .collection('attendees')
@@ -185,7 +182,6 @@ function subscribeCurrentRSVP(user){
    }
  });
 }
-
 
 function unsubscribeCurrentRSVP(){
  if (rsvpListener != null)
