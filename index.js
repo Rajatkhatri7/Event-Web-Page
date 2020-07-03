@@ -25,7 +25,7 @@ var guestbookListener = null;
 
 // Add Firebase project configuration object here
 var firebaseConfig = {
-    apiKey: "AIzaSyCulFMYN8bCxt5SVBUeQBRYF28JnkionQo",
+    apiKey: "Paste_api_key here",
     authDomain: "virtual-meetup-project.firebaseapp.com",
     databaseURL: "https://virtual-meetup-project.firebaseio.com",
     projectId: "virtual-meetup-project",
